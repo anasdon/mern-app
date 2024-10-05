@@ -9,8 +9,6 @@ jobs:
   build:
     runs-on: ubuntu:latest
     steps:
-      - name: Checkout Source
-        run: actions/checkout@v4
       - name: Login to DockerHub
         run: docker login -u ${{ secrets.DOCKER-USER }} -p  ${{ secrets.DOCKER-PASSWARD }}
       - name: Docker Image Build
