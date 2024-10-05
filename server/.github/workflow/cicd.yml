@@ -1,0 +1,28 @@
+name: Deploy Node App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs: 
+  build:
+    runs-on: ubuntu:latest
+    steps:
+      - name: Checkout Source
+        run: actions/checkout@v4
+      - name: Login to DockerHub
+        run: docker login -u ${{ secrets.DOCKER-USER }} -p  ${{ secrets.DOCKER-PASSWARD }}
+      - name: Docker Image Build
+        run: docker build -t ansa082/mern-app-backend /server
+      - name: Push to dockerhub
+        run: docker push ansa082/mern-app-backend:latest 
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: pull image
+        run: docker pull ansa082/mern-app-backend:latest
+      - name: Run Container
+        run: docker run -d -p 4000:4000 --name mern-backend -e MONGO-PASSWARD=${{ secrets.MONGODB_PASS }} ansa082/mern-app-backend
